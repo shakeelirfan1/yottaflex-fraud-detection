@@ -9,10 +9,12 @@
     "invoices": 5000,
     "payments": 5000,
     "relationship_edges": 8000,
-    "fraud_indicators": 17,
-    "investigations": 16
+    "fraud_indicators": 23,
+    "investigations": 22,
+    "investigation_events": 27,
+    "claim_status_events": 5000
   },
-  "ground_truth_rows": 17,
+  "ground_truth_rows": 23,
   "generator": "src.generator.generate_dataset",
   "synthetic_only": true
 }

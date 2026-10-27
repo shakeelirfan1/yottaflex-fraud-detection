@@ -4,15 +4,3 @@ __pycache__/
 *.py[cod]
 .env
 .DS_Store
-
-# Local environments and secrets
-.venv/
-venv/
-.env.*
-
-# Evaluation labels: keep private unless submission instructions require them
-data/ground_truth/
-
-# Temporary smoke-test data
-data/smoke/
-data/smoke_truth/

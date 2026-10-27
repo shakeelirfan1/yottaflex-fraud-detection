@@ -43,8 +43,7 @@ CREATE TABLE IF NOT EXISTS claim (
   filed_at TEXT NOT NULL,
   claimed_amount REAL NOT NULL CHECK (claimed_amount >= 0),
   approved_amount REAL NOT NULL CHECK (approved_amount >= 0 AND approved_amount <= claimed_amount),
-  status TEXT NOT NULL CHECK (status IN ('submitted','under_review','approved','rejected','paid')),
-  issue_type TEXT NOT NULL DEFAULT ''
+  status TEXT NOT NULL CHECK (status IN ('submitted','under_review','approved','rejected','paid'))
 );
 CREATE TABLE IF NOT EXISTS invoice (
   invoice_id TEXT PRIMARY KEY,
@@ -98,3 +97,24 @@ CREATE TABLE IF NOT EXISTS investigation (
 -- Production extension: append-only claim_status_event and investigation_event tables
 -- should record every transition with event_id, entity ID, from/to state, timestamp,
 -- actor, reason and correlation ID. Never overwrite audit history.
+
+CREATE TABLE IF NOT EXISTS investigation_event (
+  event_id TEXT PRIMARY KEY,
+  investigation_id TEXT NOT NULL REFERENCES investigation(investigation_id),
+  event_type TEXT NOT NULL,
+  from_status TEXT NOT NULL DEFAULT '',
+  to_status TEXT NOT NULL CHECK (to_status IN ('open','needs_review','closed')),
+  event_at TEXT NOT NULL,
+  actor TEXT NOT NULL,
+  reason TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS claim_status_event (
+  event_id TEXT PRIMARY KEY,
+  claim_id TEXT NOT NULL REFERENCES claim(claim_id),
+  from_status TEXT NOT NULL DEFAULT '',
+  to_status TEXT NOT NULL CHECK (to_status IN ('submitted','under_review','approved','rejected','paid')),
+  event_at TEXT NOT NULL,
+  actor TEXT NOT NULL,
+  reason TEXT NOT NULL
+);

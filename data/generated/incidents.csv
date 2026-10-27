@@ -515,7 +515,7 @@ INC-2026-000513,2026-08-07,medical,vehicle window broken; synthetic report detai
 INC-2026-000514,2026-07-18,theft,slipped on wet floor; synthetic report detail 246131,LOC-0045,2026-07-20
 INC-2026-000515,2025-02-25,collision,vehicle window broken; synthetic report detail 329223,LOC-0144,2025-03-04
 INC-2026-000516,2025-04-21,property_damage,slipped on wet floor; synthetic report detail 130726,LOC-0357,2025-04-23
-INC-2026-000517,2025-09-19,theft,slipped on wet floor; synthetic report detail 413015,LOC-0048,2025-09-20
+INC-2026-000517,2025-09-19,theft,repeated synthetic incident narrative cluster 1,LOC-PLANTED-02,2025-09-20
 INC-2026-000518,2026-09-24,collision,vehicle window broken; synthetic report detail 935617,LOC-0822,2026-09-28
 INC-2026-000519,2025-08-23,property_damage,rear-end collision at intersection; synthetic report detail 958380,LOC-0746,2025-08-30
 INC-2026-000520,2026-07-01,property_damage,storm damaged roof; synthetic report detail 879122,LOC-0461,2026-07-08
@@ -1857,7 +1857,7 @@ INC-2026-001855,2026-03-16,medical,water leak damaged kitchen; synthetic report 
 INC-2026-001856,2025-08-21,medical,water leak damaged kitchen; synthetic report detail 481485,LOC-0364,2025-08-30
 INC-2026-001857,2025-03-04,theft,vehicle collision at junction; synthetic report detail 117192,LOC-0920,2025-03-06
 INC-2026-001858,2025-08-24,injury,rear-end collision at intersection; synthetic report detail 680709,LOC-0140,2025-09-02
-INC-2026-001859,2025-01-05,property_damage,routine medical treatment; synthetic report detail 138664,LOC-0310,2025-01-09
+INC-2026-001859,2025-01-05,property_damage,repeated synthetic incident narrative cluster 1,LOC-PLANTED-02,2025-01-09
 INC-2026-001860,2025-09-21,injury,slipped on wet floor; synthetic report detail 040838,LOC-0748,2025-09-25
 INC-2026-001861,2026-03-04,property_damage,water leak damaged kitchen; synthetic report detail 685016,LOC-0268,2026-03-14
 INC-2026-001862,2025-08-17,medical,storm damaged roof; synthetic report detail 939474,LOC-0622,2025-08-23
@@ -2778,7 +2778,7 @@ INC-2026-002776,2026-08-13,property_damage,routine medical treatment; synthetic 
 INC-2026-002777,2025-03-20,property_damage,vehicle window broken; synthetic report detail 738100,LOC-0986,2025-03-25
 INC-2026-002778,2026-01-16,injury,vehicle window broken; synthetic report detail 210775,LOC-0096,2026-01-23
 INC-2026-002779,2025-11-06,property_damage,vehicle collision at junction; synthetic report detail 292546,LOC-0139,2025-11-17
-INC-2026-002780,2025-01-13,medical,vehicle collision at junction; synthetic report detail 755997,LOC-0759,2025-01-18
+INC-2026-002780,2025-01-13,medical,repeated synthetic incident narrative cluster 2,LOC-PLANTED-03,2025-01-18
 INC-2026-002781,2025-01-13,collision,rear-end collision at intersection; synthetic report detail 088329,LOC-0878,2025-01-21
 INC-2026-002782,2025-12-15,medical,slipped on wet floor; synthetic report detail 641570,LOC-0932,2025-12-17
 INC-2026-002783,2026-05-11,property_damage,routine medical treatment; synthetic report detail 827512,LOC-0007,2026-05-17
@@ -4224,7 +4224,7 @@ INC-2026-004222,2026-03-16,property_damage,vehicle window broken; synthetic repo
 INC-2026-004223,2025-01-28,injury,vehicle window broken; synthetic report detail 549630,LOC-0438,2025-02-05
 INC-2026-004224,2026-09-04,theft,storm damaged roof; synthetic report detail 012546,LOC-0422,2026-09-09
 INC-2026-004225,2026-07-21,theft,rear-end collision at intersection; synthetic report detail 085204,LOC-0304,2026-07-24
-INC-2026-004226,2026-08-22,property_damage,vehicle collision at junction; synthetic report detail 050010,LOC-0410,2026-08-28
+INC-2026-004226,2026-08-22,property_damage,repeated synthetic incident narrative cluster 2,LOC-PLANTED-03,2026-08-28
 INC-2026-004227,2025-12-12,medical,water leak damaged kitchen; synthetic report detail 892729,LOC-0940,2025-12-20
 INC-2026-004228,2025-03-27,collision,rear-end collision at intersection; synthetic report detail 707713,LOC-0055,2025-04-03
 INC-2026-004229,2026-07-23,property_damage,slipped on wet floor; synthetic report detail 764668,LOC-0281,2026-07-31
@@ -4314,7 +4314,7 @@ INC-2026-004312,2025-02-10,theft,routine medical treatment; synthetic report det
 INC-2026-004313,2025-04-28,injury,vehicle window broken; synthetic report detail 338629,LOC-0818,2025-05-06
 INC-2026-004314,2026-08-04,medical,vehicle window broken; synthetic report detail 004095,LOC-0917,2026-08-09
 INC-2026-004315,2025-05-07,property_damage,routine medical treatment; synthetic report detail 675518,LOC-0190,2025-05-09
-INC-2026-004316,2025-11-25,theft,rear-end collision at intersection; synthetic report detail 524015,LOC-0381,2025-12-01
+INC-2026-004316,2025-11-25,theft,repeated synthetic incident narrative cluster 2,LOC-PLANTED-03,2025-12-01
 INC-2026-004317,2025-08-11,theft,vehicle collision at junction; synthetic report detail 823465,LOC-0779,2025-08-20
 INC-2026-004318,2025-07-19,injury,slipped on wet floor; synthetic report detail 697350,LOC-0818,2025-07-30
 INC-2026-004319,2026-05-21,property_damage,vehicle collision at junction; synthetic report detail 831999,LOC-0633,2026-05-26
@@ -4630,7 +4630,7 @@ INC-2026-004628,2026-01-06,medical,vehicle window broken; synthetic report detai
 INC-2026-004629,2026-09-19,collision,slipped on wet floor; synthetic report detail 911352,LOC-0563,2026-09-26
 INC-2026-004630,2025-04-03,medical,rear-end collision at intersection; synthetic report detail 665530,LOC-0567,2025-04-13
 INC-2026-004631,2025-07-02,collision,vehicle collision at junction; synthetic report detail 014252,LOC-0870,2025-07-08
-INC-2026-004632,2025-05-11,medical,rear-end collision at intersection; synthetic report detail 993970,LOC-0392,2025-05-20
+INC-2026-004632,2025-05-11,medical,repeated synthetic incident narrative cluster 1,LOC-PLANTED-02,2025-05-20
 INC-2026-004633,2026-05-06,collision,routine medical treatment; synthetic report detail 017398,LOC-0404,2026-05-12
 INC-2026-004634,2026-04-28,theft,rear-end collision at intersection; synthetic report detail 213002,LOC-0951,2026-05-03
 INC-2026-004635,2025-06-15,theft,rear-end collision at intersection; synthetic report detail 293255,LOC-0423,2025-06-26

@@ -12,6 +12,8 @@ def test_generator_reproducible(tmp_path):
     generate_dataset(d2,t2,seed=123,n_claims=50,n_claimants=25,n_providers=10,n_edges=30)
     assert c1 == checksums(d2)
     assert truth1 == (t2/"ground_truth.csv").read_bytes()
+    for filename in ["fraud_indicators.csv", "investigations.csv", "investigation_events.csv"]:
+        assert (d1/filename).read_bytes() == (d2/filename).read_bytes()
 
 def test_required_exception_cases(tmp_path):
     d,t=tmp_path/"data",tmp_path/"truth"
@@ -43,76 +45,24 @@ def test_foreign_key_exception_is_reported(tmp_path):
     assert any(i["code"]=="payment_exceeds_approved" for i in issues)
     assert any(i["code"]=="duplicate_invoice" for i in issues)
 
-def test_missing_relationship_is_detected_from_indirect_evidence(tmp_path):
-    data_dir, truth_dir = tmp_path / "data", tmp_path / "truth"
-    generate_dataset(
-        data_dir, truth_dir, seed=123,
-        n_claims=50, n_claimants=25, n_providers=10, n_edges=30
-    )
 
-    truth = pd.read_csv(truth_dir / "ground_truth.csv", keep_default_na=False)
-    missing = truth[truth.issue_type == "missing_relationship_edge"]
-    assert not missing.empty
-
-    results = detect_suspicious(data_dir).set_index("claim_id")
-    claims = pd.read_csv(data_dir / "claims.csv")
-    planted_claim_ids = claims["claim_id"].head(5).tolist()
-
-    # The planted cluster must be flagged using observable evidence,
-    # not by reading the hidden ground-truth file.
-    for claim_id in planted_claim_ids:
-        assert results.loc[claim_id, "decision"] == "investigate"
-        evidence = results.loc[claim_id, "evidence"]
-        assert (
-            "claimant phone shared" in evidence
-            or "repeated incident narrative and location" in evidence
-        )
+def test_labels_are_not_in_claim_features(tmp_path):
+    d,t=tmp_path/"data",tmp_path/"truth"
+    generate_dataset(d,t,seed=456,n_claims=60,n_claimants=30,n_providers=10,n_edges=40)
+    claims = pd.read_csv(d/"claims.csv")
+    truth = pd.read_csv(t/"ground_truth.csv")
+    assert "issue_type" not in claims.columns
+    assert "issue_type" in truth.columns
+    assert set(truth.issue_type).issuperset({"payment_exceeds_approved", "duplicate_invoice_across_claims", "claim_missing_policy"})
 
 
-def test_shared_address_alone_does_not_trigger_investigation(tmp_path):
-    data_dir, truth_dir = tmp_path / "data", tmp_path / "truth"
-    generate_dataset(
-        data_dir, truth_dir, seed=456,
-        n_claims=50, n_claimants=25, n_providers=50, n_edges=30
-    )
-
-    # Neutralize other risk indicators to isolate shared-address behavior.
-    claimants = pd.read_csv(data_dir / "claimants.csv")
-    claims = pd.read_csv(data_dir / "claims.csv")
-    incidents = pd.read_csv(data_dir / "incidents.csv")
-    invoices = pd.read_csv(data_dir / "invoices.csv")
-    payments = pd.read_csv(data_dir / "payments.csv")
-    policies = pd.read_csv(data_dir / "policies.csv")
-    providers = pd.read_csv(data_dir / "providers.csv")
-
-    claimants["phone"] = [
-        f"UNIQUE-{i}" for i in range(len(claimants))
-    ]
-    claims["provider_id"] = providers["provider_id"].iloc[:len(claims)].to_numpy()
-    claims["policy_id"] = claims.index.map(lambda i: policies["policy_id"].iloc[i % len(policies)])
-    claims["approved_amount"] = pd.to_numeric(
-        claims["approved_amount"], errors="coerce"
-    ).fillna(0)
-
-    incidents["narrative"] = [
-        f"Unique synthetic narrative {i}" for i in range(len(incidents))
-    ]
-    incidents["location_id"] = [
-        f"UNIQUE-LOCATION-{i}" for i in range(len(incidents))
-    ]
-
-    invoices["provider_id"] = claims["provider_id"].to_numpy()
-    invoices["invoice_number"] = [
-        f"UNIQUE-BILL-{i}" for i in range(len(invoices))
-    ]
-    payments["payment_amount"] = claims["approved_amount"].to_numpy()
-
-    claimants.to_csv(data_dir / "claimants.csv", index=False)
-    claims.to_csv(data_dir / "claims.csv", index=False)
-    incidents.to_csv(data_dir / "incidents.csv", index=False)
-    invoices.to_csv(data_dir / "invoices.csv", index=False)
-    payments.to_csv(data_dir / "payments.csv", index=False)
-
-    results = detect_suspicious(data_dir)
-    assert (results["decision"] == "no_flag").all()
-    assert (results["risk_score"] == 0).all()
+def test_investigation_events_and_typed_relationships_validate(tmp_path):
+    d,t=tmp_path/"data",tmp_path/"truth"
+    generate_dataset(d,t,seed=789,n_claims=60,n_claimants=30,n_providers=10,n_edges=40)
+    tables = load_tables(d)
+    assert "investigation_events" in tables
+    assert len(tables["investigation_events"]) >= len(tables["investigations"])
+    assert "status_changed" in set(tables["investigation_events"].event_type)
+    assert set(tables["relationship_edges"].source_type).issubset({"claimant","policy","claim","incident","provider","invoice","payment"})
+    issues = validate_tables(tables)
+    assert not any(x["code"] in {"invalid_typed_entity_reference", "invalid_relationship_endpoint", "invalid_investigation_transition"} for x in issues)

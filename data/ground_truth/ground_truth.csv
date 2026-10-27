@@ -1,0 +1,24 @@
+entity_type,entity_id,issue_type,expected_decision,evidence
+claim,CLM-2026-000001,planted_suspicious_network,investigate,"Shared claimant phone, repeated narrative/location and common provider"
+claim,CLM-2026-000002,planted_suspicious_network,investigate,"Shared claimant phone, repeated narrative/location and common provider"
+claim,CLM-2026-000003,planted_suspicious_network,investigate,"Shared claimant phone, repeated narrative/location and common provider"
+claim,CLM-2026-000004,planted_suspicious_network,investigate,"Shared claimant phone, repeated narrative/location and common provider"
+claim,CLM-2026-000005,planted_suspicious_network,investigate,"Shared claimant phone, repeated narrative/location and common provider"
+claimant,CHT-001756,shared_contact_network,investigate,Shared synthetic phone in planted network
+claimant,CHT-001742,shared_contact_network,investigate,Shared synthetic phone in planted network
+claimant,CHT-000253,shared_contact_network,investigate,Shared synthetic phone in planted network
+claimant,CHT-000063,shared_contact_network,investigate,Shared synthetic phone in planted network
+claimant,CHT-000852,shared_contact_network,investigate,Shared synthetic phone in planted network
+payment,PAY-2026-000001,payment_exceeds_approved,exception,Payment amount exceeds claim approved amount
+claim,CLM-2026-000001,claim_payment_exceeds_approved,investigate,Linked payment exceeds approved amount
+invoice,INV-PRV-000488-000001,duplicate_invoice_across_claims,investigate,Same invoice number appears on separate claims
+claim,CLM-2026-000002,claim_duplicate_invoice,investigate,Linked invoice number is duplicated across claims
+claim,CLM-2026-000003,claim_missing_policy,exception,policy_id does not exist in policy master
+relationship,CHT-001756::CHT-001742,missing_relationship_edge,investigate,Known planted pair is absent from RelationshipEdge; infer from other evidence
+claim,CLM-2026-001859,planted_suspicious_network,investigate,Seeded cluster 1: shared contact and repeated narrative/location
+claim,CLM-2026-004632,planted_suspicious_network,investigate,Seeded cluster 1: shared contact and repeated narrative/location
+claim,CLM-2026-000517,planted_suspicious_network,investigate,Seeded cluster 1: shared contact and repeated narrative/location
+claim,CLM-2026-002780,planted_suspicious_network,investigate,Seeded cluster 2: shared contact and repeated narrative/location
+claim,CLM-2026-004226,planted_suspicious_network,investigate,Seeded cluster 2: shared contact and repeated narrative/location
+claim,CLM-2026-004316,planted_suspicious_network,investigate,Seeded cluster 2: shared contact and repeated narrative/location
+claimant_group,ADDR-BENIGN-HOUSEHOLD-01,benign_shared_address,do_not_flag_on_address_alone,Shared household address is intentionally benign

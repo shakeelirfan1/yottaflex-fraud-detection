@@ -10,10 +10,12 @@
       "invoices": 5000,
       "payments": 5000,
       "relationship_edges": 8000,
-      "fraud_indicators": 17,
-      "investigations": 16
+      "fraud_indicators": 23,
+      "investigations": 22,
+      "investigation_events": 27,
+      "claim_status_events": 5000
     },
-    "ground_truth_rows": 17,
+    "ground_truth_rows": 23,
     "generator": "src.generator.generate_dataset",
     "synthetic_only": true
   },
@@ -35,48 +37,51 @@
       "code": "payment_exceeds_approved",
       "table": "payments",
       "row_id": "PAY-2026-000001",
-      "message": "Payment 2577.87 exceeds approved amount 2077.87"
+      "message": "Payment 7461.90 exceeds approved amount 6961.90"
     },
     {
       "severity": "exception",
       "code": "duplicate_invoice",
       "table": "invoices",
-      "row_id": "INV-PRV-000305-000001",
+      "row_id": "INV-PRV-000094-000001",
       "message": "Invoice number BILL-00000001 is reused across invoice rows"
     },
     {
       "severity": "exception",
       "code": "duplicate_invoice",
       "table": "invoices",
-      "row_id": "INV-PRV-000226-000002",
+      "row_id": "INV-PRV-000488-000001",
       "message": "Invoice number BILL-00000001 is reused across invoice rows"
     }
   ],
   "metrics": {
-    "true_positives": 5,
-    "false_positives": 0,
+    "true_positives": 11,
+    "false_positives": 40,
     "false_negatives": 0,
-    "true_negatives_estimate": 4995,
-    "precision": 1.0,
+    "true_negatives_estimate": 4949,
+    "precision": 0.2157,
     "recall": 1.0,
-    "f1": 1.0,
-    "false_positive_rate": 0.0,
+    "f1": 0.3548,
+    "false_positive_rate": 0.008,
     "false_negative_rate": 0.0,
-    "ground_truth_claims": 5
+    "ground_truth_claims": 11
   },
   "checksums": {
-    "claimants.csv": "abbe9340ee24975c6568add0c9e42b9c70464c29b7e5f14a317f5d1c52efd70b",
-    "claims.csv": "da76a2efcca8da931a22358903e895e83fd44bebccdaf9d6003158318ae0f495",
-    "detection_results.csv": "e803b316fd60ba1e3f9098e8255eca2e66df483ad2cd29d5d439bbc719615985",
-    "fraud_indicators.csv": "73834cbc62e6a7100ac45e820c2c46d90dc247030f06b3cb8a35597463b43ee0",
-    "incidents.csv": "c525129e7e00f48954a91203e9a40ec445e42d75bc4d555f14b5db6463837b8d",
-    "investigations.csv": "1e99139cca8c4bdfa79ed15649a0e8e5c5bd89b12907f00099bde3ad490d99d9",
-    "invoices.csv": "09c911a8d34892bc9a6cedcbdbed3112be7b1bf941b7c593877efc67f746355d",
-    "manifest.json": "b21aa70afabf8c9bc2b281b2808cbe8034090119e97816ffcdfb5ab670f1fce6",
-    "payments.csv": "cd5bde7626d5b0bda6cdd22cab9722413f40c352b314e998961b1f04ca8ffa72",
+    "claim_status_events.csv": "4ba5d266d1706271f96998e30a995be767d41f3b32ebab9fad862599663958ff",
+    "claimants.csv": "561d4de0c9e7d240e05386cfd060c7bab93cd7735ae3236d36bbfe9a58d5172b",
+    "claims.csv": "8d6f98ccc3ce2b9cd1d3f42a96b00142c3f5f0da352f49cdfab4ada691a95476",
+    "detection_results.csv": "e42723430df9f37d4377869344c735bc99898d6bf683421833d5d8f21daf3f47",
+    "fraud_indicators.csv": "38bcab2ed8a04fd4940a298502e6f0e107beb4d01d5b6a7e1e988adda958d52c",
+    "incidents.csv": "a93c132ee974e79fbae02255506b1a346493ede1214d527540e0fc433c13b304",
+    "investigation_events.csv": "38e08affd4f3c33d74aeec9eea4c706977a29400d33b63da273f7f6bfb1cc250",
+    "investigations.csv": "b5fde2a3d07025f21ea6e45baeedebf4321c9e7de5fe9533d56e633461e3b429",
+    "invoices.csv": "b52a2c4712a7a4cf922e25eb9a73a8e510e539a6326388841f096ad0e757e15e",
+    "manifest.json": "ff9a7834965df09fa05fa363884147c730f6450d2834e7789752aaeffa0aa9c5",
+    "payments.csv": "c4d8fcfc2e4f48910505d171a4e7ff4cbc4fe523d5f4ae96cb2399a3d48520e4",
     "policies.csv": "59edeac0eb820c00e29c1eae361eca24141edb882b317bb4dbcffaaa47c5912c",
     "providers.csv": "07d16ac348ffb91aaf8d509c0c78955a901e49080bf4664434b9da9154692c2e",
-    "relationship_edges.csv": "3d4676dbab8b99300b54907691970a209d46dbc7ae8bc25c0b5a7e53d8e5cb18",
-    "validation_report.json": "bcb452ee79737f7c4f4b02051c7691172a73e9db0d19cccf4ceb1e753d87a4d6"
+    "relationship_edges.csv": "2b0c85e995585d5b624265fdb798b0618e4693c7deca4d647273306315a9b28b",
+    "seed_data.sql": "6bee49cc77260d5805c59309a741ba18c84a1b5c8b897ae3d4fbdf53fd82cee9",
+    "validation_report.json": "dd14ceecf94c765704201b4e1f0aa82ada49a3cae6aa58b678aeafb4e9b54c80"
   }
 }

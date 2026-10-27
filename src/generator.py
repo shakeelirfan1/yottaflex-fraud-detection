@@ -15,7 +15,7 @@ def _id(prefix: str, n: int, year: int | None = None) -> str:
 def generate_dataset(out_dir: str | Path = "data/generated", truth_dir: str | Path = "data/ground_truth", *, seed: int = DEFAULT_SEED, n_claims: int = 5000, n_claimants: int = 2000, n_providers: int = 500, n_edges: int = 8000) -> dict:
     """Generate all source tables and separate labels from a fixed seed.
 
-    Required planted exception cases are explicit issue_type values. Ground truth is
+    Required planted exception cases are recorded in the separate ground-truth issue_type field. Ground truth is
     written separately and must never be passed as a detection feature.
     """
     if min(n_claims, n_claimants, n_providers) < 1 or n_edges < 0:
@@ -59,23 +59,30 @@ def generate_dataset(out_dir: str | Path = "data/generated", truth_dir: str | Pa
     narratives = np.array(["rear-end collision at intersection", "water leak damaged kitchen", "slipped on wet floor", "vehicle window broken", "routine medical treatment", "storm damaged roof", "vehicle collision at junction"])
     incidents = pd.DataFrame({"incident_id": inc_ids, "incident_date": incident_dates.date.astype(str), "incident_type": rng.choice(["collision","property_damage","injury","theft","medical"], n_claims), "narrative": [f"{base}; synthetic report detail {int(code):06d}" for base, code in zip(rng.choice(narratives, n_claims), rng.integers(0, 1_000_000, n_claims))], "location_id": [f"LOC-{int(x):04d}" for x in rng.integers(1, 1000, n_claims)], "reported_at": (incident_dates + pd.to_timedelta(rng.integers(0, 12, n_claims), unit="D")).date.astype(str)})
     policy_ids = policies.policy_id.to_numpy()
+    # Heavy-tailed assignment creates a mix of one-off and repeat claimants/providers.
+    claimant_weights = 1 / np.arange(1, n_claimants + 1, dtype=float) ** 0.65
+    claimant_weights = claimant_weights / claimant_weights.sum()
+    provider_weights = 1 / np.arange(1, n_providers + 1, dtype=float) ** 0.55
+    provider_weights = provider_weights / provider_weights.sum()
+    claimant_order = rng.permutation(claimants.claimant_id.to_numpy())
+    provider_order = rng.permutation(providers.provider_id.to_numpy())
     claims = pd.DataFrame({
         "claim_id": [_id("CLM", i, 2026) for i in range(1, n_claims+1)],
-        "claimant_id": rng.choice(claimants.claimant_id, n_claims),
+        "claimant_id": rng.choice(claimant_order, n_claims, p=claimant_weights),
         "policy_id": rng.choice(policy_ids, n_claims),
         "incident_id": inc_ids,
-        "provider_id": rng.choice(providers.provider_id, n_claims),
+        "provider_id": rng.choice(provider_order, n_claims, p=provider_weights),
         "filed_at": (incident_dates + pd.to_timedelta(rng.integers(1, 30, n_claims), unit="D")).date.astype(str),
         "claimed_amount": np.round(rng.uniform(150, 15000, n_claims), 2),
         "approved_amount": 0.0,
         "status": rng.choice(["submitted","under_review","approved","rejected","paid"], n_claims, p=[.25,.25,.25,.10,.15]),
-        "issue_type": "",
     })
     claims["approved_amount"] = np.where(claims.status.isin(["approved","paid"]), np.round(claims.claimed_amount * rng.uniform(.55, 1.0, n_claims), 2), 0.0)
 
     # Invoice and payment events derive from claims and approved amounts.
+    invoice_seq = claims.groupby("provider_id", sort=True).cumcount() + 1
     invoices = pd.DataFrame({
-        "invoice_id": [f"INV-{pid}-{i:06d}" for i,pid in enumerate(claims.provider_id, 1)],
+        "invoice_id": [f"INV-{pid}-{seq:06d}" for pid,seq in zip(claims.provider_id, invoice_seq)],
         "invoice_number": [f"BILL-{i:08d}" for i in range(1, n_claims+1)],
         "claim_id": claims.claim_id, "provider_id": claims.provider_id,
         "invoice_date": claims.filed_at, "invoice_amount": claims.claimed_amount,
@@ -91,12 +98,18 @@ def generate_dataset(out_dir: str | Path = "data/generated", truth_dir: str | Pa
 
     # Relationship edges; normal shared address edges exist too, but are not proof.
     edge_rows = []
-    entity_ids = [("claimant", x) for x in claimants.claimant_id] + [("provider", x) for x in providers.provider_id]
+    entity_ids = ([("claimant", x) for x in claimants.claimant_id]
+                  + [("policy", x) for x in policies.policy_id]
+                  + [("claim", x) for x in claims.claim_id]
+                  + [("incident", x) for x in incidents.incident_id]
+                  + [("provider", x) for x in providers.provider_id]
+                  + [("invoice", x) for x in invoices.invoice_id]
+                  + [("payment", x) for x in payments.payment_id])
     for i in range(n_edges):
         a = entity_ids[int(rng.integers(0, len(entity_ids)))]
         b = entity_ids[int(rng.integers(0, len(entity_ids)))]
         while b == a: b = entity_ids[int(rng.integers(0, len(entity_ids)))]
-        edge_rows.append({"edge_id": _id("REDGE", i+1), "source_type": a[0], "source_id": a[1], "target_type": b[0], "target_id": b[1], "relationship_type": rng.choice(["shared_contact","same_address","used_provider","referral"]), "effective_from": "2025-01-01", "effective_to": "", "source": "synthetic_generator"})
+        edge_rows.append({"edge_id": _id("REDGE", i+1), "source_type": a[0], "source_id": a[1], "target_type": b[0], "target_id": b[1], "relationship_type": rng.choice(["shared_contact","same_address","used_provider","referral","same_incident","same_policy","invoice_link","payment_link","reported_with","serviced_by"]), "effective_from": "2025-01-01", "effective_to": "", "source": "synthetic_generator"})
     edges = pd.DataFrame(edge_rows, columns=["edge_id","source_type","source_id","target_type","target_id","relationship_type","effective_from","effective_to","source"])
 
     # Plant deterministic fraud patterns and five required exception paths.
@@ -108,7 +121,7 @@ def generate_dataset(out_dir: str | Path = "data/generated", truth_dir: str | Pa
         network_claim_ids = claims.claim_id.iloc[:5].tolist()
         shared_claimant_ids = claims.claimant_id.iloc[:5].tolist()
         shared_phone = "5559999000"
-        for cid in set(shared_claimant_ids):
+        for cid in dict.fromkeys(shared_claimant_ids):
             claimants.loc[claimants.claimant_id == cid, "phone"] = shared_phone
         repeated_narrative = "repeated staged collision narrative at same junction"
         incidents.loc[:4, "narrative"] = repeated_narrative
@@ -116,27 +129,39 @@ def generate_dataset(out_dir: str | Path = "data/generated", truth_dir: str | Pa
         claims.loc[:4, "provider_id"] = providers.provider_id.iloc[0]
         invoices.loc[:4, "provider_id"] = providers.provider_id.iloc[0]
         for cid in network_claim_ids: label("claim", cid, "planted_suspicious_network", "investigate", "Shared claimant phone, repeated narrative/location and common provider")
-        for pid in set(shared_claimant_ids): label("claimant", pid, "shared_contact_network", "investigate", "Shared synthetic phone in planted network")
+        for pid in dict.fromkeys(shared_claimant_ids): label("claimant", pid, "shared_contact_network", "investigate", "Shared synthetic phone in planted network")
         # Payment exceeds approved amount (explicit issue).
         claims.loc[0, "status"] = "approved"; claims.loc[0, "approved_amount"] = round(float(claims.loc[0,"claimed_amount"])*.6,2)
         payments.loc[0, "payment_amount"] = round(float(claims.loc[0,"approved_amount"])+500,2)
-        claims.loc[0, "issue_type"] = "payment_exceeds_approved"
         label("payment", payments.loc[0,"payment_id"], "payment_exceeds_approved", "exception", "Payment amount exceeds claim approved amount")
         label("claim", claims.loc[0,"claim_id"], "claim_payment_exceeds_approved", "investigate", "Linked payment exceeds approved amount")
         # Duplicate invoice fingerprint across two claimants/claims.
         if n_claims >= 2:
             invoices.loc[1, "invoice_number"] = invoices.loc[0, "invoice_number"]
             invoices.loc[1, "status"] = "duplicate_suspected"
-            claims.loc[1, "issue_type"] = "duplicate_invoice"
             label("invoice", invoices.loc[1,"invoice_id"], "duplicate_invoice_across_claims", "investigate", "Same invoice number appears on separate claims")
             label("claim", claims.loc[1,"claim_id"], "claim_duplicate_invoice", "investigate", "Linked invoice number is duplicated across claims")
         # Invalid policy reference, retained as a labelled exception instead of hidden corruption.
         claims.loc[2, "policy_id"] = "POL-INVALID-999999"
-        claims.loc[2, "issue_type"] = "missing_policy_reference"
         label("claim", claims.loc[2,"claim_id"], "claim_missing_policy", "exception", "policy_id does not exist in policy master")
         # Planted suspicious relationship intentionally omitted from edges.
         if len(shared_claimant_ids) >= 2:
             label("relationship", f"{shared_claimant_ids[0]}::{shared_claimant_ids[1]}", "missing_relationship_edge", "investigate", "Known planted pair is absent from RelationshipEdge; infer from other evidence")
+        # Additional deterministic planted clusters at seeded, non-fixed positions.
+        # These reduce reliance on one contiguous block while remaining reproducible.
+        eligible = np.arange(3, n_claims)
+        if len(eligible) >= 6:
+            extra = rng.choice(eligible, size=min(6, len(eligible)), replace=False)
+            for cluster_no, idx in enumerate(extra.reshape(-1, 3) if len(extra) >= 3 else [] , start=1):
+                cluster_claimants = claims.loc[idx, "claimant_id"].tolist()
+                cluster_phone = f"55588{cluster_no:05d}"
+                for claimant_id in dict.fromkeys(cluster_claimants):
+                    claimants.loc[claimants.claimant_id == claimant_id, "phone"] = cluster_phone
+                cluster_narrative = f"repeated synthetic incident narrative cluster {cluster_no}"
+                incidents.loc[idx, "narrative"] = cluster_narrative
+                incidents.loc[idx, "location_id"] = f"LOC-PLANTED-{cluster_no+1:02d}"
+                for claim_id in claims.loc[idx, "claim_id"]:
+                    label("claim", claim_id, "planted_suspicious_network", "investigate", f"Seeded cluster {cluster_no}: shared contact and repeated narrative/location")
         # benign common address should not be labelled as fraud by itself.
         if n_claimants >= 4:
             label("claimant_group", "ADDR-BENIGN-HOUSEHOLD-01", "benign_shared_address", "do_not_flag_on_address_alone", "Shared household address is intentionally benign")
@@ -151,7 +176,33 @@ def generate_dataset(out_dir: str | Path = "data/generated", truth_dir: str | Pa
         for i,r in enumerate(truth_rows) if r["expected_decision"] in ("investigate","exception")
     ], columns=["investigation_id","entity_type","entity_id","opened_at","status","assigned_to","resolution"])
 
-    tables: Dict[str,pd.DataFrame] = {"claimants":claimants,"policies":policies,"claims":claims,"incidents":incidents,"providers":providers,"invoices":invoices,"payments":payments,"relationship_edges":edges,"fraud_indicators":fraud_indicators,"investigations":investigations}
+    initial_investigations = investigations.copy()
+    # Seed a small number of completed investigations with an explicit status transition.
+    # The current-state table stores the latest status; the event table preserves both states.
+    resolved_indices = list(investigations.index[::5])
+    for idx in resolved_indices:
+        investigations.loc[idx, "status"] = "closed"
+        investigations.loc[idx, "resolution"] = "Resolved in synthetic seed"
+    investigation_event_rows = []
+    for i, row in enumerate(initial_investigations.itertuples(index=False)):
+        investigation_event_rows.append({"event_id": _id("INVEVT", len(investigation_event_rows)+1),
+            "investigation_id": row.investigation_id, "event_type": "opened", "from_status": "",
+            "to_status": row.status, "event_at": row.opened_at, "actor": "system-seed",
+            "reason": "Initial seeded investigation"})
+        if i in resolved_indices:
+            investigation_event_rows.append({"event_id": _id("INVEVT", len(investigation_event_rows)+1),
+                "investigation_id": row.investigation_id, "event_type": "status_changed", "from_status": row.status,
+                "to_status": "closed", "event_at": "2026-10-02", "actor": "synthetic-reviewer",
+                "reason": "Synthetic example of an explicit investigation resolution"})
+    investigation_events = pd.DataFrame(investigation_event_rows,
+        columns=["event_id","investigation_id","event_type","from_status","to_status","event_at","actor","reason"])
+    claim_status_events = pd.DataFrame([
+        {"event_id": _id("CLMEVT", i+1), "claim_id": row.claim_id,
+         "from_status": "", "to_status": row.status, "event_at": row.filed_at,
+         "actor": "system-seed", "reason": "Initial claim status at creation"}
+        for i, row in enumerate(claims.itertuples(index=False))
+    ], columns=["event_id","claim_id","from_status","to_status","event_at","actor","reason"])
+    tables: Dict[str,pd.DataFrame] = {"claimants":claimants,"policies":policies,"claims":claims,"incidents":incidents,"providers":providers,"invoices":invoices,"payments":payments,"relationship_edges":edges,"fraud_indicators":fraud_indicators,"investigations":investigations,"investigation_events":investigation_events,"claim_status_events":claim_status_events}
     for name, df in tables.items(): df.to_csv(out_dir / f"{name}.csv", index=False)
     truth = pd.DataFrame(truth_rows, columns=["entity_type","entity_id","issue_type","expected_decision","evidence"])
     truth.to_csv(truth_dir / "ground_truth.csv", index=False)

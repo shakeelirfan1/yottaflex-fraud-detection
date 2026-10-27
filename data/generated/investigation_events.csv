@@ -1,0 +1,28 @@
+event_id,investigation_id,event_type,from_status,to_status,event_at,actor,reason
+INVEVT-000001,INVG-2026-000001,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000002,INVG-2026-000001,status_changed,open,closed,2026-10-02,synthetic-reviewer,Synthetic example of an explicit investigation resolution
+INVEVT-000003,INVG-2026-000002,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000004,INVG-2026-000003,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000005,INVG-2026-000004,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000006,INVG-2026-000005,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000007,INVG-2026-000006,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000008,INVG-2026-000006,status_changed,open,closed,2026-10-02,synthetic-reviewer,Synthetic example of an explicit investigation resolution
+INVEVT-000009,INVG-2026-000007,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000010,INVG-2026-000008,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000011,INVG-2026-000009,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000012,INVG-2026-000010,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000013,INVG-2026-000011,opened,,needs_review,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000014,INVG-2026-000011,status_changed,needs_review,closed,2026-10-02,synthetic-reviewer,Synthetic example of an explicit investigation resolution
+INVEVT-000015,INVG-2026-000012,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000016,INVG-2026-000013,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000017,INVG-2026-000014,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000018,INVG-2026-000015,opened,,needs_review,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000019,INVG-2026-000016,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000020,INVG-2026-000016,status_changed,open,closed,2026-10-02,synthetic-reviewer,Synthetic example of an explicit investigation resolution
+INVEVT-000021,INVG-2026-000017,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000022,INVG-2026-000018,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000023,INVG-2026-000019,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000024,INVG-2026-000020,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000025,INVG-2026-000021,opened,,open,2026-10-01,system-seed,Initial seeded investigation
+INVEVT-000026,INVG-2026-000021,status_changed,open,closed,2026-10-02,synthetic-reviewer,Synthetic example of an explicit investigation resolution
+INVEVT-000027,INVG-2026-000022,opened,,open,2026-10-01,system-seed,Initial seeded investigation
