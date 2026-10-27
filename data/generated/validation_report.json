@@ -81,7 +81,6 @@
     "policies.csv": "59edeac0eb820c00e29c1eae361eca24141edb882b317bb4dbcffaaa47c5912c",
     "providers.csv": "07d16ac348ffb91aaf8d509c0c78955a901e49080bf4664434b9da9154692c2e",
     "relationship_edges.csv": "2b0c85e995585d5b624265fdb798b0618e4693c7deca4d647273306315a9b28b",
-    "seed_data.sql": "6bee49cc77260d5805c59309a741ba18c84a1b5c8b897ae3d4fbdf53fd82cee9",
-    "validation_report.json": "dd14ceecf94c765704201b4e1f0aa82ada49a3cae6aa58b678aeafb4e9b54c80"
+    "seed_data.sql": "6bee49cc77260d5805c59309a741ba18c84a1b5c8b897ae3d4fbdf53fd82cee9"
   }
 }

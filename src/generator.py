@@ -210,9 +210,17 @@ def generate_dataset(out_dir: str | Path = "data/generated", truth_dir: str | Pa
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return manifest
 
+
 def checksums(directory: str | Path) -> dict:
-    """SHA-256 hashes of generated CSV/JSON files for reproducibility checks."""
+    """Return stable SHA-256 hashes of generated artifacts.
+
+    Exclude validation_report.json because it contains this checksum
+    manifest; hashing it would create a circular dependency.
+    """
     result = {}
+    excluded_files = {"validation_report.json"}
     for path in sorted(Path(directory).glob("*")):
-        if path.is_file(): result[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+        if path.is_file() and path.name not in excluded_files:
+            result[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
     return result
+

@@ -60,14 +60,19 @@ python -m pytest tests/test_project.py -k missing_phone -v
 - **AI-assisted code changes:** The remediation in this version includes AI-assisted edits to the generator, validator, schema, tests, README, data dictionary, schema documentation and SQL seed exporter. I must personally review these changes and run the commands listed below in my own repository before submission.
 - **Completeness limitation:** This is a curated record of the project conversation available for this task, not a full ChatGPT export. If the assessment requires every prompt across all project conversations, compare it with the original export and add missing prompts before submitting.
 
+
 ## Final verification record
 
-Commands to run on the final local commit:
+The following checks were run in the local remediation workspace:
 
-```powershell
-python -m pytest -q
-python scripts/run_pipeline.py
-python scripts/export_sql_seed.py
-```
+- `python scripts/run_pipeline.py` — completed successfully twice.
+- Reproducibility check — the two pipeline output files matched.
+- Validation report check — the two generated validation reports matched.
+- `python scripts/export_sql_seed.py` — completed successfully and wrote `data/generated/seed_data.sql`.
+- `python -m pytest -q` — passed, 6 tests (7.54 seconds) in the final Git clone.
 
-The remediation workspace run passed six tests, generated the requested baseline volumes, produced zero validation errors and four expected exceptions, and successfully imported the SQL seed into an in-memory SQLite database. Repeat these checks locally and update this record if your results differ.
+The checksum manifest excludes `validation_report.json` because that report contains the manifest itself. Including its own hash would create a circular dependency and cause the report to differ between runs.
+
+The pipeline generated synthetic data and reported zero validation errors and four expected exceptions. Its fraud-detection results should be interpreted as a synthetic benchmark, not evidence of real-world performance.
+
+These checks were run locally in the remediation workspace. They must be repeated against the final repository commit before submission.
