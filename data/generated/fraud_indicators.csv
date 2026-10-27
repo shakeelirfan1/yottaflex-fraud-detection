@@ -1,0 +1,18 @@
+indicator_id,entity_type,entity_id,indicator_type,severity,score,created_at,evidence
+FIND-000001,claim,CLM-2026-000001,planted_suspicious_network,high,90,2026-10-01,"Shared claimant phone, repeated narrative/location and common provider"
+FIND-000002,claim,CLM-2026-000002,planted_suspicious_network,high,90,2026-10-01,"Shared claimant phone, repeated narrative/location and common provider"
+FIND-000003,claim,CLM-2026-000003,planted_suspicious_network,high,90,2026-10-01,"Shared claimant phone, repeated narrative/location and common provider"
+FIND-000004,claim,CLM-2026-000004,planted_suspicious_network,high,90,2026-10-01,"Shared claimant phone, repeated narrative/location and common provider"
+FIND-000005,claim,CLM-2026-000005,planted_suspicious_network,high,90,2026-10-01,"Shared claimant phone, repeated narrative/location and common provider"
+FIND-000006,claimant,CHT-000859,shared_contact_network,high,90,2026-10-01,Shared synthetic phone in planted network
+FIND-000007,claimant,CHT-001694,shared_contact_network,high,90,2026-10-01,Shared synthetic phone in planted network
+FIND-000008,claimant,CHT-001757,shared_contact_network,high,90,2026-10-01,Shared synthetic phone in planted network
+FIND-000009,claimant,CHT-001223,shared_contact_network,high,90,2026-10-01,Shared synthetic phone in planted network
+FIND-000010,claimant,CHT-000658,shared_contact_network,high,90,2026-10-01,Shared synthetic phone in planted network
+FIND-000011,payment,PAY-2026-000001,payment_exceeds_approved,high,90,2026-10-01,Payment amount exceeds claim approved amount
+FIND-000012,claim,CLM-2026-000001,claim_payment_exceeds_approved,high,90,2026-10-01,Linked payment exceeds approved amount
+FIND-000013,invoice,INV-PRV-000226-000002,duplicate_invoice_across_claims,high,90,2026-10-01,Same invoice number appears on separate claims
+FIND-000014,claim,CLM-2026-000002,claim_duplicate_invoice,high,90,2026-10-01,Linked invoice number is duplicated across claims
+FIND-000015,claim,CLM-2026-000003,claim_missing_policy,high,90,2026-10-01,policy_id does not exist in policy master
+FIND-000016,relationship,CHT-001223::CHT-001757,missing_relationship_edge,high,90,2026-10-01,Known planted pair is absent from RelationshipEdge; infer from other evidence
+FIND-000017,claimant_group,ADDR-BENIGN-HOUSEHOLD-01,benign_shared_address,info,0,2026-10-01,Shared household address is intentionally benign

@@ -1,0 +1,18 @@
+{
+  "seed": 20261022,
+  "counts": {
+    "claimants": 2000,
+    "policies": 2500,
+    "claims": 5000,
+    "incidents": 5000,
+    "providers": 500,
+    "invoices": 5000,
+    "payments": 5000,
+    "relationship_edges": 8000,
+    "fraud_indicators": 17,
+    "investigations": 16
+  },
+  "ground_truth_rows": 17,
+  "generator": "src.generator.generate_dataset",
+  "synthetic_only": true
+}

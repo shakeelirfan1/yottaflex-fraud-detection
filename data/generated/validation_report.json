@@ -1,0 +1,82 @@
+{
+  "manifest": {
+    "seed": 20261022,
+    "counts": {
+      "claimants": 2000,
+      "policies": 2500,
+      "claims": 5000,
+      "incidents": 5000,
+      "providers": 500,
+      "invoices": 5000,
+      "payments": 5000,
+      "relationship_edges": 8000,
+      "fraud_indicators": 17,
+      "investigations": 16
+    },
+    "ground_truth_rows": 17,
+    "generator": "src.generator.generate_dataset",
+    "synthetic_only": true
+  },
+  "validation_issue_count": 4,
+  "validation_issues_by_severity": {
+    "error": 0,
+    "exception": 4
+  },
+  "validation_issues": [
+    {
+      "severity": "exception",
+      "code": "missing_policy_reference",
+      "table": "claims",
+      "row_id": "CLM-2026-000003",
+      "message": "policy_id=POL-INVALID-999999 is not present in policies"
+    },
+    {
+      "severity": "exception",
+      "code": "payment_exceeds_approved",
+      "table": "payments",
+      "row_id": "PAY-2026-000001",
+      "message": "Payment 2577.87 exceeds approved amount 2077.87"
+    },
+    {
+      "severity": "exception",
+      "code": "duplicate_invoice",
+      "table": "invoices",
+      "row_id": "INV-PRV-000305-000001",
+      "message": "Invoice number BILL-00000001 is reused across invoice rows"
+    },
+    {
+      "severity": "exception",
+      "code": "duplicate_invoice",
+      "table": "invoices",
+      "row_id": "INV-PRV-000226-000002",
+      "message": "Invoice number BILL-00000001 is reused across invoice rows"
+    }
+  ],
+  "metrics": {
+    "true_positives": 5,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "true_negatives_estimate": 4995,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "false_positive_rate": 0.0,
+    "false_negative_rate": 0.0,
+    "ground_truth_claims": 5
+  },
+  "checksums": {
+    "claimants.csv": "abbe9340ee24975c6568add0c9e42b9c70464c29b7e5f14a317f5d1c52efd70b",
+    "claims.csv": "da76a2efcca8da931a22358903e895e83fd44bebccdaf9d6003158318ae0f495",
+    "detection_results.csv": "e803b316fd60ba1e3f9098e8255eca2e66df483ad2cd29d5d439bbc719615985",
+    "fraud_indicators.csv": "73834cbc62e6a7100ac45e820c2c46d90dc247030f06b3cb8a35597463b43ee0",
+    "incidents.csv": "c525129e7e00f48954a91203e9a40ec445e42d75bc4d555f14b5db6463837b8d",
+    "investigations.csv": "1e99139cca8c4bdfa79ed15649a0e8e5c5bd89b12907f00099bde3ad490d99d9",
+    "invoices.csv": "09c911a8d34892bc9a6cedcbdbed3112be7b1bf941b7c593877efc67f746355d",
+    "manifest.json": "b21aa70afabf8c9bc2b281b2808cbe8034090119e97816ffcdfb5ab670f1fce6",
+    "payments.csv": "cd5bde7626d5b0bda6cdd22cab9722413f40c352b314e998961b1f04ca8ffa72",
+    "policies.csv": "59edeac0eb820c00e29c1eae361eca24141edb882b317bb4dbcffaaa47c5912c",
+    "providers.csv": "07d16ac348ffb91aaf8d509c0c78955a901e49080bf4664434b9da9154692c2e",
+    "relationship_edges.csv": "3d4676dbab8b99300b54907691970a209d46dbc7ae8bc25c0b5a7e53d8e5cb18",
+    "validation_report.json": "bcb452ee79737f7c4f4b02051c7691172a73e9db0d19cccf4ceb1e753d87a4d6"
+  }
+}
